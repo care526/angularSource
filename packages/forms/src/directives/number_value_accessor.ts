@@ -46,6 +46,7 @@ export const NUMBER_VALUE_ACCESSOR: any = {
   host: {'(input)': 'onChange($event.target.value)', '(blur)': 'onTouched()'},
   providers: [NUMBER_VALUE_ACCESSOR]
 })
+// 继承 BuiltInControlValueAccessor
 export class NumberValueAccessor extends BuiltInControlValueAccessor implements
     ControlValueAccessor {
   /**

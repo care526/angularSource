@@ -200,11 +200,14 @@ export function cleanUpValidators(
 }
 
 function setUpViewChangePipeline(control: FormControl, dir: NgControl): void {
+  // formControl 相关代码 注册了 valueAccessor 的 change
   dir.valueAccessor!.registerOnChange((newValue: any) => {
+    // 并没有 直接更新 formControl 的 value 值，先更新在 _pendingValue 属性中
     control._pendingValue = newValue;
     control._pendingChange = true;
     control._pendingDirty = true;
 
+    // 只有 change 策略才是 实时更新
     if (control.updateOn === 'change') updateControl(control, dir);
   });
 }
@@ -220,6 +223,7 @@ function setUpBlurPipeline(control: FormControl, dir: NgControl): void {
 
 function updateControl(control: FormControl, dir: NgControl): void {
   if (control._pendingDirty) control.markAsDirty();
+  // 真实更新 value 的值
   control.setValue(control._pendingValue, {emitModelToViewChange: false});
   dir.viewToModelUpdate(control._pendingValue);
   control._pendingChange = false;
@@ -228,15 +232,18 @@ function updateControl(control: FormControl, dir: NgControl): void {
 function setUpModelChangePipeline(control: FormControl, dir: NgControl): void {
   const onChange = (newValue: any, emitModelEvent: boolean) => {
     // control -> view
+    // formControl 的 change 过来后，调用 valueAccessor 的 writeValue，更新到 DOM 元素的属性上
     dir.valueAccessor!.writeValue(newValue);
 
     // control -> ngModel
     if (emitModelEvent) dir.viewToModelUpdate(newValue);
   };
+  // 注册 formControl 的 change 收集器，以便 formControl 值变化的时候接收到通知
   control.registerOnChange(onChange);
 
   // Register a callback function to cleanup onChange handler
   // from a control instance when a directive is destroyed.
+  // 当 formControl 销毁的时候，取消 订阅
   dir._registerOnDestroy(() => {
     control._unregisterOnChange(onChange);
   });
@@ -310,6 +317,7 @@ export function syncPendingControls(form: FormGroup, directives: NgControl[]): v
 }
 
 // TODO: vsavkin remove it once https://github.com/angular/angular/issues/3011 is implemented
+// 优先级 自定义组件 > 构建的上层(如 number input、select 等) > 默认(input textarea type="text")
 export function selectValueAccessor(
     dir: NgControl, valueAccessors: ControlValueAccessor[]): ControlValueAccessor|null {
   if (!valueAccessors) return null;
@@ -337,8 +345,11 @@ export function selectValueAccessor(
     }
   });
 
+  // 自定义组件的 valueAccessor
   if (customAccessor) return customAccessor;
+  // 非默认的(angular 定义的) valueAccessor
   if (builtinAccessor) return builtinAccessor;
+  // 默认的 valueAccessor
   if (defaultAccessor) return defaultAccessor;
 
   if (typeof ngDevMode === 'undefined' || ngDevMode) {

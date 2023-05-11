@@ -78,11 +78,13 @@ export const COMPOSITION_BUFFER_MODE = new InjectionToken<boolean>('CompositionE
   host: {
     '(input)': '$any(this)._handleInput($event.target.value)',
     '(blur)': 'onTouched()',
+    // 中文输入的时候 触发一次 compositionStart，过程中不再触发，完成或取消的时候 触发 compositionend
     '(compositionstart)': '$any(this)._compositionStart()',
     '(compositionend)': '$any(this)._compositionEnd($event.target.value)'
   },
   providers: [DEFAULT_VALUE_ACCESSOR]
 })
+// 继承 BaseControlValueAccessor
 export class DefaultValueAccessor extends BaseControlValueAccessor implements ControlValueAccessor {
   /** Whether the user is creating a composition string (IME events). */
   private _composing = false;
@@ -102,10 +104,12 @@ export class DefaultValueAccessor extends BaseControlValueAccessor implements Co
    */
   writeValue(value: any): void {
     const normalizedValue = value == null ? '' : value;
+    // 设置控件的值 为视图层的传入的值
     this.setProperty('value', normalizedValue);
   }
 
   /** @internal */
+  // 控件的值 实时传递给 onChange 方法
   _handleInput(value: any): void {
     if (!this._compositionMode || (this._compositionMode && !this._composing)) {
       this.onChange(value);

@@ -166,8 +166,10 @@ export class FormControlName extends NgControl implements OnChanges, OnDestroy {
    *
    * @param newValue The new value for the view model.
    */
+  // 接收最新的数据
   override viewToModelUpdate(newValue: any): void {
     this.viewModel = newValue;
+    // 触发 ngModelChange 方法
     this.update.emit(newValue);
   }
 

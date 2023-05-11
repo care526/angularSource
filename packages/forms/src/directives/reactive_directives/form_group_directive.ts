@@ -19,6 +19,7 @@ import {AsyncValidator, AsyncValidatorFn, Validator, ValidatorFn} from '../valid
 import {FormControlName} from './form_control_name';
 import {FormArrayName, FormGroupName} from './form_group_name';
 
+// 已 ControlContainer 为令牌 得到当前 FormGroupDirective 指令的实例
 export const formDirectiveProvider: any = {
   provide: ControlContainer,
   useExisting: forwardRef(() => FormGroupDirective)
@@ -140,6 +141,9 @@ export class FormGroupDirective extends ControlContainer implements Form, OnChan
    * @description
    * Returns the `FormGroup` bound to this directive.
    */
+  // constructor(private controlContainer: ControlContainer) {}
+  // this.form = this.controlContainer.control as FormGroup;
+  // 返回当前的 FormGroup
   override get control(): FormGroup {
     return this.form;
   }

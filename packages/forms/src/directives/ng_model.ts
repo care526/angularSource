@@ -204,15 +204,30 @@ export class NgModel extends NgControl implements OnChanges, OnDestroy {
   @Output('ngModelChange') update = new EventEmitter();
 
   constructor(
+      // 向上找到 最近的 FormGroup 指令对象
+      // export const formDirectiveProvider: any = {
+      //   provide: ControlContainer,
+      //   useExisting: forwardRef(() => FormGroupDirective)
+      // };
       @Optional() @Host() parent: ControlContainer,
+
+      // 当前控件绑定的其他 同步校验器
       @Optional() @Self() @Inject(NG_VALIDATORS) validators: (Validator|ValidatorFn)[],
-      @Optional() @Self() @Inject(NG_ASYNC_VALIDATORS) asyncValidators:
-          (AsyncValidator|AsyncValidatorFn)[],
-      @Optional() @Self() @Inject(NG_VALUE_ACCESSOR) valueAccessors: ControlValueAccessor[]) {
+
+      // 当前控件绑定的其他 异步校验器
+      @Optional() @Self() @Inject(NG_ASYNC_VALIDATORS) asyncValidators: (AsyncValidator|AsyncValidatorFn)[],
+
+      // 当前 匹配上的 valueAccessors 数组
+      @Optional() @Self() @Inject(NG_VALUE_ACCESSOR) valueAccessors: ControlValueAccessor[]
+  ) {
     super();
     this._parent = parent;
+
+    // 设置 同步 异步 校验器
     this._setValidators(validators);
     this._setAsyncValidators(asyncValidators);
+
+    // 获取特定的 valueAccessors
     this.valueAccessor = selectValueAccessor(this, valueAccessors);
   }
 

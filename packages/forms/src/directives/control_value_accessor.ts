@@ -41,6 +41,7 @@ export interface ControlValueAccessor {
    *
    * @param obj The new value for the element
    */
+  // 从视图层View 到 DOM 元素
   writeValue(obj: any): void;
 
   /**
@@ -76,6 +77,7 @@ export interface ControlValueAccessor {
    *
    * @param fn The callback function to register
    */
+  // 从 DOM 元素的变化到 视图层 View
   registerOnChange(fn: any): void;
 
   /**
@@ -109,6 +111,7 @@ export interface ControlValueAccessor {
    *
    * @param fn The callback function to register
    */
+  // 失焦的时候 标记 formControl touched
   registerOnTouched(fn: any): void;
 
   /**
@@ -128,6 +131,7 @@ export interface ControlValueAccessor {
    *
    * @param isDisabled The disabled status to set on the element
    */
+  // 设置元素 disabled
   setDisabledState?(isDisabled: boolean): void;
 }
 
@@ -145,12 +149,14 @@ export class BaseControlValueAccessor {
    * element.
    * @nodoc
    */
+  // 记录值变化的函数
   onChange = (_: any) => {};
 
   /**
    * The registered callback function called when a blur event occurs on the input element.
    * @nodoc
    */
+  // 记录失焦的函数
   onTouched = () => {};
 
   constructor(private _renderer: Renderer2, private _elementRef: ElementRef) {}
@@ -160,6 +166,7 @@ export class BaseControlValueAccessor {
    * implementation.
    * @nodoc
    */
+  // 封装的设置 DOM元素属性的 函数
   protected setProperty(key: string, value: any): void {
     this._renderer.setProperty(this._elementRef.nativeElement, key, value);
   }
@@ -168,6 +175,7 @@ export class BaseControlValueAccessor {
    * Registers a function called when the control is touched.
    * @nodoc
    */
+  // 注册 onTouched 函数到 当前
   registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
@@ -176,6 +184,7 @@ export class BaseControlValueAccessor {
    * Registers a function called when the control value changes.
    * @nodoc
    */
+  // 注册 onChange 函数到 当前
   registerOnChange(fn: (_: any) => {}): void {
     this.onChange = fn;
   }
@@ -184,6 +193,7 @@ export class BaseControlValueAccessor {
    * Sets the "disabled" property on the range input element.
    * @nodoc
    */
+  // 设置控件禁用
   setDisabledState(isDisabled: boolean): void {
     this.setProperty('disabled', isDisabled);
   }
@@ -198,6 +208,7 @@ export class BaseControlValueAccessor {
  * Note: this is an *internal-only* class and should not be extended or used directly in
  * applications code.
  */
+// 用户区分 默认  BuiltIn 自定义组件
 @Directive()
 export class BuiltInControlValueAccessor extends BaseControlValueAccessor {
 }

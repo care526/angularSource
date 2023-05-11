@@ -126,6 +126,7 @@ export interface AbstractControlOptions {
    * @description
    * The event name for control to update upon.
    */
+  // 更新策略 变更 失焦 提交
   updateOn?: 'change'|'blur'|'submit';
 }
 
@@ -1292,6 +1293,7 @@ export class FormControl extends AbstractControl {
   } = {}): void {
     (this as {value: any}).value = this._pendingValue = value;
     if (this._onChange.length && options.emitModelToViewChange !== false) {
+      // 通知每一个 valueAccessor 的订阅
       this._onChange.forEach(
           (changeFn) => changeFn(this.value, options.emitViewToModelChange !== false));
     }

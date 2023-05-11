@@ -50,11 +50,12 @@ export interface InjectableDecorator {
    *
    */
   (): TypeDecorator;
-  (options?: {providedIn: Type<any>|'root'|'platform'|'any'|null}&
-   InjectableProvider): TypeDecorator;
+
+  (options?: {providedIn: Type<any>|'root'|'platform'|'any'|null} & InjectableProvider): TypeDecorator;
+
   new(): Injectable;
-  new(options?: {providedIn: Type<any>|'root'|'platform'|'any'|null}&
-      InjectableProvider): Injectable;
+
+  new(options?: {providedIn: Type<any>|'root'|'platform'|'any'|null} & InjectableProvider): Injectable;
 }
 
 /**
@@ -90,16 +91,21 @@ export interface Injectable {
  * @publicApi
  */
 export const Injectable: InjectableDecorator = makeDecorator(
-    'Injectable', undefined, undefined, undefined,
-    (type: Type<any>, meta: Injectable) => SWITCH_COMPILE_INJECTABLE(type as any, meta));
+  'Injectable',
+  undefined,
+  undefined,
+  undefined,
+  (type: Type<any>, meta: Injectable) => SWITCH_COMPILE_INJECTABLE(type as any, meta)
+);
 
 
 /**
  * Supports @Injectable() in JIT mode for Render2.
  */
 function render2CompileInjectable(
-    injectableType: Type<any>,
-    options?: {providedIn?: Type<any>|'root'|'platform'|'any'|null}&InjectableProvider): void {
+  injectableType: Type<any>,
+  options?: { providedIn?: Type<any> | 'root' | 'platform' | 'any' | null } & InjectableProvider
+): void {
   if (options && options.providedIn !== undefined && !getInjectableDef(injectableType)) {
     (injectableType as InjectableType<any>).ɵprov = ɵɵdefineInjectable({
       token: injectableType,
@@ -111,5 +117,4 @@ function render2CompileInjectable(
 
 export const SWITCH_COMPILE_INJECTABLE__POST_R3__ = render3CompileInjectable;
 const SWITCH_COMPILE_INJECTABLE__PRE_R3__ = render2CompileInjectable;
-const SWITCH_COMPILE_INJECTABLE: typeof render3CompileInjectable =
-    SWITCH_COMPILE_INJECTABLE__PRE_R3__;
+const SWITCH_COMPILE_INJECTABLE: typeof render3CompileInjectable = SWITCH_COMPILE_INJECTABLE__PRE_R3__;

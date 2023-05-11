@@ -198,6 +198,9 @@ export abstract class AbstractControlDirective {
    * Sets synchronous validators for this directive.
    * @internal
    */
+  // 设置同步校验器
+  // 存储原始 校验器数组
+  // 设置 计算的单校验函数
   _setValidators(validators: Array<Validator|ValidatorFn>|undefined): void {
     this._rawValidators = validators || [];
     this._composedValidatorFn = composeValidators(this._rawValidators);
@@ -207,6 +210,9 @@ export abstract class AbstractControlDirective {
    * Sets asynchronous validators for this directive.
    * @internal
    */
+  // 设置异步校验器
+  // 存储原始 校验器数组
+  // 设置 计算的单校验函数
   _setAsyncValidators(validators: Array<AsyncValidator|AsyncValidatorFn>|undefined): void {
     this._rawAsyncValidators = validators || [];
     this._composedAsyncValidatorFn = composeAsyncValidators(this._rawAsyncValidators);
